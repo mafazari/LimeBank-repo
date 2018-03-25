@@ -1,0 +1,15 @@
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\bin\Debug\bankgui.exe
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\bin\Debug\bankgui.pdb
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.csprojResolveAssemblyReference.cache
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Begin.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Properties.Resources.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.csproj.GenerateResource.Cache
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.csproj.CoreCompileInputs.cache
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.exe
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.pdb
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Login.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Menu.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.AccountSelect.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Balance.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.Withdraw.resources
+C:\Users\Marco\Documents\School stuff\Project 3 Herkansing\GUI Remake\bankgui\bankgui\obj\Debug\bankgui.EndScreen.resources
