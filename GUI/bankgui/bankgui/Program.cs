@@ -26,10 +26,8 @@ namespace bankgui
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Begin());
         }
-        
     }
 }
-
 /*public class DtbConnection
 {
     MySqlConnection cn;

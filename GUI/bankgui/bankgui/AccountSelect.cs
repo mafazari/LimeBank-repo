@@ -18,9 +18,11 @@ namespace bankgui
         private SerialPort Arduino;
         public delegate void DataToUI(String myString);
         public DataToUI updateFromHandler;
+        String nuid;
 
-        public AccountSelect(SerialPort s)
+        public AccountSelect(SerialPort s, String n)
         {
+            nuid = n;
             Cursor.Hide();
             this.Arduino = s;
             InitializeComponent();
@@ -52,7 +54,7 @@ namespace bankgui
                 if (mystring.Equals("1"))
                 {
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Menu(Arduino, "1").Show();
+                    new Menu(Arduino, "1", nuid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();
@@ -60,7 +62,7 @@ namespace bankgui
                 if (mystring.Equals("3"))
                 {
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Menu(Arduino, "2").Show();
+                    new Menu(Arduino, "2", nuid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();

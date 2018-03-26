@@ -24,6 +24,7 @@ namespace bankgui
         public String nuid;
         MySqlConnection cn;
         int IncorrectAttemptCounter;
+        private MySqlDataReader reader;
         //bool loop = true;
 
         public Login(String mystring)
@@ -33,7 +34,9 @@ namespace bankgui
             nuid = mystring.Remove(mystring.Length - 4);
             cn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=Antonio01!;database=lime-bank");
             cn.Open();
-
+            MySqlCommand cmd = new MySqlCommand("SELECT Hash FROM `lime-bank`.rekening where PasID = '" + nuid + "';", cn);
+            reader = cmd.ExecuteReader();
+            //checkIfActiveCard();
             //textBox2.Text = nuid;    
         }
 
@@ -46,6 +49,26 @@ namespace bankgui
             updateFromHandler = new DataToUI(ChangeTextBox);
 
             
+        }
+
+        public bool checkIfActiveCard()
+        {
+            MySqlCommand cmd1 = new MySqlCommand("SELECT Actief FROM `lime-bank`.pas where PasID = '" + nuid + "';", cn);
+            MySqlDataReader reader1 = cmd1.ExecuteReader();
+            reader1.Read();
+            Object obj = new Object();
+            obj = reader1.GetString(0);
+            string a = (string)obj;
+            int b = Int32.Parse(a);
+
+            if (b == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void ChangeTextBox(String mystring)
@@ -61,11 +84,11 @@ namespace bankgui
                      }   */
 
             //textBox2.Text = nuid;
-            //Hash hash = new Hash();
+            Hash hash = new Hash();
             if (isAlphaNumeric(mystring))
             {
-                    string appendNumber = mystring.First().ToString();
-                    textBox1.AppendText(appendNumber);
+                string appendNumber = mystring.First().ToString();
+                textBox1.AppendText(appendNumber);
             }
             string textboxtext = textBox1.Text;
 
@@ -73,73 +96,78 @@ namespace bankgui
             {
                 if (textboxtext.Length > 3 && mystring.Equals("*") && IncorrectAttemptCounter < 3)
                 {
-                    //string hashed = hash.makeHash(nuid, textboxtext);
-                    //textBox2.Text = hashed;
-                    //MySqlCommand cmd = new MySqlCommand("SELECT Hash FROM `lime-bank`.rekening where PasID = '" + nuid + "';", cn);
-                    //MySqlDataReader reader = cmd.ExecuteReader();
+                    string hashed = hash.makeHash(nuid, textboxtext);
+                    textBox2.Text = hashed;
+                    
 
 
-                    /*while (reader.Read())
+                    while (true)
                     {
                         Object obj = new Object();
+                        reader.Read();
                         obj = reader.GetString(0);
                         string hashCheck = (string)obj;
                         textBox2.Text = hashCheck;
                         if (hashed == hashCheck)
-                        {*/
-                    if (textboxtext == "1234")
-                    {
-                        Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                        new AccountSelect(Arduino).Show(); //IF USER HAS >1 ACCOUNT
-                        cn.Close();
-                        //this.Refresh();
-                        Thread.Sleep(1);
-                        this.Hide();
-                    }
-                    else
-                    {
-                        IncorrectAttemptCounter++;
-                        label2.Text = "Password incorrect, attempt " + "(" + IncorrectAttemptCounter + ")!";
-                        label2.ForeColor = System.Drawing.Color.Red;
-                        label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
-                        if (IncorrectAttemptCounter > 2)
                         {
-                            label2.Text = "Your card has been blocked, please contact support";
-                            label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
+                            Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
+                            new AccountSelect(Arduino, nuid).Show(); //IF USER HAS >1 ACCOUNT
+                            cn.Close();
+                            //this.Refresh();
+                            Thread.Sleep(1);
+                            this.Hide();
                         }
+                        else
+                        {
+                            IncorrectAttemptCounter++;
+                            label2.Text = "Password incorrect, attempt " + "(" + IncorrectAttemptCounter + ")!";
+                            label2.ForeColor = System.Drawing.Color.Red;
+                            label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
+                            if (IncorrectAttemptCounter > 2)
+                            {
+                                /*label2.Text = "Your card has been blocked, please contact support";
+                                label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;*/
+                                textBox1.ResetText();
+                                label2.Text = "This card has been deactivated and cannot be used, please contact support.";
+                                label2.ForeColor = System.Drawing.Color.Red;
+                                label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
+                                timer1.Start();
+                            }
+                        }
+                        /*if (IncorrectAttemptCounter == 3)
+                        {
+                            label2.Text = "Your card is blocked, please contact support";
+                            label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
+                        }*/
+                        return;
+                        //}
+                        //Arduino.Close();
+                        //Thread.Sleep(1); 
                     }
-                    /*if (IncorrectAttemptCounter == 3)
+                    /*else if (IncorrectAttemptCounter == 3)
                     {
-                        label2.Text = "Your card is blocked, please contact support";
+                        label2.Text = "This card has been disactivated";
                         label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
                     }*/
-                    return;
-                    //}
-                    //Arduino.Close();
-                    //Thread.Sleep(1); 
                 }
-                /*else if (IncorrectAttemptCounter == 3)
+                    if (mystring.Equals("C"))
+                    {
+                        label2.Text = "Please, log in";
+                        label2.ForeColor = System.Drawing.Color.DarkGreen;
+                        label2.Left = 617;
+                        textBox1.ResetText();
+                    }
+                }
+                /*else
                 {
-                    label2.Text = "This card has been disactivated";
-                    label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
-                }*/
-                if (mystring.Equals("C"))
-                {
-                    label2.Text = "Please, log in";
-                    label2.ForeColor = System.Drawing.Color.DarkGreen;
-                    label2.Left = 617;
                     textBox1.ResetText();
-                }
+                    label2.Text = "This card has been disactivated and cannot be used, please contact support.";
+                    label2.ForeColor = System.Drawing.Color.Red;
+                    label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
+                    timer1.Start();
+                }*/
             }
-            else
-            {
-                textBox1.ResetText();
-                label2.Text = "This card has been disactivated and cannot be used, please contact support.";
-                label2.ForeColor = System.Drawing.Color.Red;
-                label2.Left = (this.ClientSize.Width - label2.Size.Width) / 2;
-                timer1.Start();
-            }
-        }
+        
         public bool isAlphaNumeric(string input)
         {
             Regex r = new Regex("[0-9]");

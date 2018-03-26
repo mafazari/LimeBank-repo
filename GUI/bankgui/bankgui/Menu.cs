@@ -23,10 +23,12 @@ namespace bankgui
         string SelectedAcc;
         MySqlConnection cn;
         private MySqlDataReader reader;
+        String nuid;
 
-        public Menu(SerialPort s, string sa)
+        public Menu(SerialPort s, string sa, String n)
         {
             SelectedAcc = sa;
+            nuid = n;
             Cursor.Hide();
             this.Arduino = s;
             InitializeComponent();
@@ -53,7 +55,7 @@ namespace bankgui
             {
                 if (mystring.Equals("1")) //quick 70
                 {
-                    MySqlCommand cmd = new MySqlCommand("Update `lime-bank`.rekening set Balans = Balans - " + 70 + " where PasID = 'F049897C' and RekeningType = " + SelectedAcc + ";", cn);
+                    MySqlCommand cmd = new MySqlCommand("Update `lime-bank`.rekening set Balans = Balans - " + 70 + " where PasID = '" + nuid + "' and RekeningType = " + SelectedAcc + ";", cn);
                     reader = cmd.ExecuteReader();
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
                     new EndScreen(Arduino).Show();
@@ -63,8 +65,16 @@ namespace bankgui
                 }
                 if (mystring.Equals("2")) //withdraw
                 {
+                    MySqlCommand cmd = new MySqlCommand("SELECT RekeningID FROM `lime-bank`.rekening where PasID = '" + nuid + "' and RekeningType = " + SelectedAcc + ";", cn);
+                    reader = cmd.ExecuteReader();
+                    reader.Read();
+                    Object obj = new Object();
+                    obj = reader.GetString(0);
+                    string a = (string)obj;
+                    int rekid = Int32.Parse(a);
+
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Withdraw(Arduino, SelectedAcc).Show();
+                    new Withdraw(Arduino, SelectedAcc, nuid, rekid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();
@@ -72,7 +82,7 @@ namespace bankgui
                 if (mystring.Equals("3")) //check balance
                 {
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Balance(Arduino, SelectedAcc).Show();
+                    new Balance(Arduino, SelectedAcc, nuid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();
@@ -88,7 +98,7 @@ namespace bankgui
                 if (mystring.Equals("A")) //Account Select
                 {
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new AccountSelect(Arduino).Show();
+                    new AccountSelect(Arduino, nuid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();

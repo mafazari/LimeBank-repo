@@ -24,9 +24,13 @@ namespace bankgui
         string SelectedAcc;
         MySqlConnection cn;
         private MySqlDataReader reader1;
+        String nuid;
+        int rekid;
 
-        public Withdraw(SerialPort s, string sa)
+        public Withdraw(SerialPort s, string sa, String n, int r)
         {
+            rekid = r;
+            nuid = n;
             SelectedAcc = sa;
             Cursor.Hide();
             this.Arduino = s;
@@ -35,7 +39,7 @@ namespace bankgui
             updateFromHandler = new DataToUI(ChangeTextBox);
             cn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=Antonio01!;database=lime-bank");
             cn.Open();
-            MySqlCommand cmd1 = new MySqlCommand("SELECT Balans FROM `lime-bank`.rekening where RekeningType = " + SelectedAcc + " AND PasID = 'F049897C';", cn);
+            MySqlCommand cmd1 = new MySqlCommand("SELECT Balans FROM `lime-bank`.rekening where RekeningType = " + SelectedAcc + " AND PasID = '" + nuid + "';", cn);
             reader1 = cmd1.ExecuteReader();
         }
 
@@ -128,8 +132,12 @@ namespace bankgui
                         if (balans > textboxint)
                         {
                             reader1.Close();
-                            MySqlCommand cmd = new MySqlCommand("Update `lime-bank`.rekening set Balans = Balans - " + textboxtext + " where PasID = 'F049897C' and RekeningType = " + SelectedAcc + ";", cn);
+                            //reader.Close();
+                            MySqlCommand cmd = new MySqlCommand("Update `lime-bank`.rekening set Balans = Balans - " + textboxtext + " where PasID = '" + nuid + "' and RekeningType = " + SelectedAcc + ";", cn);
+                            MySqlCommand cmd2 = new MySqlCommand("insert into `lime-bank`.transaction(RekeningID, Balans, AtmID, Time, Date) values("+ rekid + ", " + textboxtext + " ,'Lime Bank', current_time(), current_date())", cn);
                             MySqlDataReader reader = cmd.ExecuteReader();
+                            reader.Close();
+                            MySqlDataReader reader2 = cmd2.ExecuteReader();
                             new EndScreen(Arduino).Show();
                             this.Refresh();
                             Thread.Sleep(1);

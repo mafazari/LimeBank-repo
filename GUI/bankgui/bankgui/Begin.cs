@@ -30,7 +30,7 @@ namespace bankgui
             Cursor.Hide();
             InitializeComponent();
             //Hash hash = new Hash();
-            //textBox1.Text = hash.makeHash("F049897C", "1234");
+            //textBox1.Text = hash.makeHash("2091867C", "54321");
 
             //cn = new MySqlConnection("server=127.           0.0.1;uid=root;pwd=Antonio01!;database=lime-bank");
             //da = new MySqlDataAdapter("SELECT Naam FROM `lime-bank`.klant where KlantID = 1;", cn);

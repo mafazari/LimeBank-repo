@@ -21,11 +21,14 @@ namespace bankgui
         public delegate void DataToUI(String myString);
         public DataToUI updateFromHandler;
         string SelectedAcc;
+        String nuid;
         MySqlConnection cn;
+        MySqlDataReader reader;
 
-        public Balance(SerialPort s, string sa)
+        public Balance(SerialPort s, string sa, String n)
         {
             SelectedAcc = sa;
+            nuid = n;
             //Cursor.Hide();
             this.Arduino = s;
             InitializeComponent();
@@ -33,16 +36,17 @@ namespace bankgui
             updateFromHandler = new DataToUI(CheckInput);
             cn = new MySqlConnection("server=127.0.0.1;uid=root;pwd=Antonio01!;database=lime-bank");
             cn.Open();
-            MySqlCommand cmd = new MySqlCommand("SELECT Balans FROM `lime-bank`.rekening where RekeningType = " + SelectedAcc + " AND PasID = 'F049897C';", cn);
-            MySqlDataReader reader = cmd.ExecuteReader();
+            MySqlCommand cmd = new MySqlCommand("SELECT Balans FROM `lime-bank`.rekening where RekeningType = " + SelectedAcc + " AND PasID = '" + nuid + "';", cn);
+            reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 Object obj = new Object();
                 obj = reader.GetString(0);
                 string a = (string)obj;
                 label5.Text = "€ " + a;
-                //cn.Close();
+                return;
             }
+            
         }
 
         private void DataRecHandler(object sender, SerialDataReceivedEventArgs e)
@@ -62,8 +66,17 @@ namespace bankgui
             {
                 if (mystring.Equals("*"))
                 {
+                    reader.Close();
+                    MySqlCommand cmd = new MySqlCommand("SELECT RekeningID FROM `lime-bank`.rekening where PasID = '" + nuid + "' and RekeningType = " + SelectedAcc + ";", cn);
+                    reader = cmd.ExecuteReader();
+                    reader.Read();
+                    Object obj = new Object();
+                    obj = reader.GetString(0);
+                    string a = (string)obj;
+                    int rekid = Int32.Parse(a);
+
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Withdraw(Arduino, SelectedAcc).Show();
+                    new Withdraw(Arduino, SelectedAcc, nuid, rekid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();
@@ -71,7 +84,7 @@ namespace bankgui
                 if (mystring.Equals("A"))
                 {
                     Arduino.DataReceived -= new SerialDataReceivedEventHandler(DataRecHandler);
-                    new Menu(Arduino, SelectedAcc).Show();
+                    new Menu(Arduino, SelectedAcc, nuid).Show();
                     this.Refresh();
                     Thread.Sleep(1);
                     this.Hide();
